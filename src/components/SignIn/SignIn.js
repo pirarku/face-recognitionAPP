@@ -20,7 +20,7 @@ function SignIn({loadUser,routeChange, route}) {
     const SignInSubmit = () => {
         //first param is the fetched url
         //second param is the method
-        fetch('http://localhost:3000/signin', {
+        fetch('https://face-recognitionapi.onrender.com/signin', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
@@ -41,7 +41,7 @@ function SignIn({loadUser,routeChange, route}) {
     const RegisterSubmit = () => {
         //first param is the fetched url
         //second param is the method
-        fetch('http://localhost:3000/register', {
+        fetch('https://face-recognitionapi.onrender.com/register', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({

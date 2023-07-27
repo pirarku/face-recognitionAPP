@@ -66,7 +66,7 @@ class App extends Component {
 
   onClickDetect = () => {
     this.setState({image_Url: this.state.input})
-        fetch("http://localhost:3000/clarifyApi", {
+        fetch("https://face-recognitionapi.onrender.com/clarifyApi", {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -76,7 +76,7 @@ class App extends Component {
             .then(response => response.json())
             .then(result => {
               if(result && this.state.input !== ''){
-                  fetch('http://localhost:3000/image', {
+                  fetch('https://face-recognitionapi.onrender.com/image', {
                     method: 'put',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
