@@ -4,9 +4,12 @@ function SignIn({loadUser,routeChange, route}) {
     const [email, setEmail] = new useState('');
     const [password, setPassword] = new useState('');
     const [name, setName] = new useState('');
+    const [failed, setfailed] = new useState(false);
+    const [incomplete, setIncomplete] = new useState(false);
+    const [emailvalid, setemailvalid] = new useState(false);
     
     const inputName = (e) => {
-            setName(e.target.value);
+        setName(e.target.value);
     }
 
     const inputEmail = (e) => {
@@ -33,6 +36,9 @@ function SignIn({loadUser,routeChange, route}) {
             if(data.id){
                 loadUser(data);
                 routeChange('Home')
+                setfailed(false);
+            }else {
+                setfailed(true);
             }
          })
         
@@ -54,6 +60,14 @@ function SignIn({loadUser,routeChange, route}) {
          .then(data => {
             if(data.id){
                 routeChange('SignIn');
+                window.location.reload();
+                setIncomplete(false)
+                setemailvalid(false)
+            }else if(data === 'registerIncomplete'){
+                setIncomplete(true)
+                console.log(data);
+            } else {
+                setemailvalid(true)
             }
             
          })
@@ -71,7 +85,7 @@ function SignIn({loadUser,routeChange, route}) {
                                  <div className="mt3">
                                     <label className="db fw6 lh-copy f6" htmlFor="name">Name</label>
                                     <input 
-                                        className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
+                                        className="pa3 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
                                         type="text" 
                                         name="name"  
                                         id="name"
@@ -87,23 +101,36 @@ function SignIn({loadUser,routeChange, route}) {
                         <div className="mt3">
                         <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
                         <input 
-                            className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
+                            className="pa3 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
                             type="email" 
                             name="email-address"  
                             id="email-address"
                             onChange={inputEmail}
                         />
+                        {
+                            route === 'Register'
+                            ? emailvalid 
+                                ?  <p className="center red br2">invalid email</p>: <></>
+                            : <></>
+                        }
                         </div>
                         <div className="mv3">
                         <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
                         <input 
-                            className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
+                            className="b pa3 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
                             type="password" 
                             name="password"  
                             id="password"
                             onChange={inputPassword}
                         />
                         </div>
+                        {
+                            route === 'Register'
+                            ? incomplete ? <p className="center red br2">incomplete Credentials</p>: <></>
+                            : failed 
+                                ? <p className="center red br2">email and password are incorrect</p>: <></>
+
+                        }
                     </fieldset>
                     {
                         route === 'Register'

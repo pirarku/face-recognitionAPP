@@ -66,30 +66,31 @@ class App extends Component {
 
   onClickDetect = () => {
     this.setState({image_Url: this.state.input})
-        fetch("https://face-recognitionapi.onrender.com/clarifyApi", {
-            method: 'post',
+      fetch("https://face-recognitionapi.onrender.com/clarifyApi", {
+            method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                url: this.state.input
             })
         })
-            .then(response => response.json())
-            .then(result => {
-              if(result && this.state.input !== ''){
-                  fetch('https://face-recognitionapi.onrender.com/image', {
-                    method: 'put',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                      id : this.state.user.id
-                    })
-                  })
-                  .then(res => res.json())
-                  .then(count => {
-                    this.setState(Object.assign(this.state.user, {entries: count}))})
-              }
-              this.bounding_box(this.calculateBorder(result))
-            })
-            .catch(error => console.log('error', error));
+        .then(response => response.json())
+        .then(result => {
+          if(result && this.state.input !== ''){
+              fetch('https://face-recognitionapi.onrender.com/image', {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                  id : this.state.user.id
+                })
+              })
+              .then(res => res.json())
+              .then(count => {
+                this.setState(Object.assign(this.state.user, {entries: count}))})
+              .catch(error => console.log(error))
+          }
+          this.bounding_box(this.calculateBorder(result))
+        })
+        .catch(error => console.log('error', error));
   }
 
   routeChange = (route) => {
