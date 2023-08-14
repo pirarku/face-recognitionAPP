@@ -8,6 +8,45 @@ import FaceDetection from './components/FaceDetection/FaceDetection'
 import Ranks from './components/Ranks/Ranks';
 import SignIn from './components/SignIn/SignIn';
 
+
+  // const clarifiApi = (image) => {
+  //     const PAT = 'ea510041c8cd4829a87f25798406f10b';
+  //     const USER_ID = 'jefaint';       
+  //     const APP_ID = 'brain'; 
+  //     const IMAGE_URL = image;
+  
+  //     const raw = JSON.stringify({
+  //       "user_app_id": {
+  //           "user_id": USER_ID,
+  //           "app_id": APP_ID
+  //       },
+  //       "inputs": [
+  //           {
+  //               "data": {
+  //                   "image": {
+  //                       "url": IMAGE_URL
+  //                     }
+  //                 }
+  //             }
+  //         ]
+  //     });
+  
+  //     const requestOptions = {
+  //         method: 'POST',
+  //         headers: {
+  //             'Accept': 'application/json',
+  //             'Authorization': 'Key ' + PAT
+  //         },
+  //         body: raw
+  //     };
+  
+  //     return requestOptions;
+  // }
+
+  
+  // .catch(error => res.status(400).json('something wrong with the server'));
+
+
 const InititalState = {
   input: '',
   image_Url: '',
@@ -41,17 +80,30 @@ class App extends Component {
   }
 
   calculateBorder = (result) => {
-    const bounding_box = result.outputs[0].data.regions[0].region_info.bounding_box;
+    const bounding_box = result.outputs[0].data.regions.map(item => {
+      return item.region_info.bounding_box;
+    })
+    // console.log('bounding box',bounding_boxArr);
+    // const bounding_box = result.outputs[0].data.regions[0].region_info.bounding_box;
     const imageOutput = document.getElementById('imageOutput');
     const width = Number(imageOutput.width);
     const height = Number(imageOutput.height);
 
-    const obj = {
-      top: bounding_box.top_row * height,
-      bottom: height - (bounding_box.bottom_row * height),
-      left: bounding_box.left_col * width,
-      right: width - (bounding_box.right_col* width)
-    }
+    const obj = bounding_box.map(item => {
+      return {
+        top: item.top_row * height,
+        bottom: height - (item.bottom_row * height),
+        left: item.left_col * width,
+        right: width - (item.right_col* width)
+      }
+    })
+
+    // const obj = {
+    //   top: bounding_box.top_row * height,
+    //   bottom: height - (bounding_box.bottom_row * height),
+    //   left: bounding_box.left_col * width,
+    //   right: width - (bounding_box.right_col* width)
+    // }
 
     return obj;
   }
@@ -66,7 +118,15 @@ class App extends Component {
 
   onClickDetect = () => {
     this.setState({image_Url: this.state.input})
-      fetch("https://face-recognitionapi.onrender.com/clarifyApi", {
+      // fetch("https://face-recognitionapi.onrender.com/clarifyApi", {
+      //       method: 'POST',
+      //       headers: {'Content-Type': 'application/json'},
+      //       body: JSON.stringify({
+      //          url: this.state.input
+      //       })
+      //   })
+      // fetch("https://api.clarifai.com/v2/models/face-detection/outputs", clarifiApi(this.state.input))
+      fetch("https://face-recognitionapi.onrender.com/clarify", {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
